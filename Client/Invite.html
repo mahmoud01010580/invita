@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دعوة زفاف</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#16324F;
+    --navy-deep:#0D2338;
+    --sky:#5C82A8;
+    --powder:#C7DAEA;
+    --cream:#FBF8F2;
+    --paper:#F1F5F9;
+    --gold:#C9A961;
+    --gold-deep:#A8823D;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--navy-deep);
+    font-family:'Tajawal',sans-serif;
+    color:var(--navy);
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  .display{font-family:'Aref Ruqaa',serif;}
+  .lat{font-family:'Cormorant Garamond',serif;}
+  img{max-width:100%; display:block;}
+
+  #petals{position:fixed; inset:0; pointer-events:none; z-index:5; perspective:800px; overflow:hidden;}
+  .petal{
+    position:absolute; top:-40px; width:16px; height:20px;
+    background:radial-gradient(circle at 30% 30%, #9DC0E0, #4E7AA8 80%);
+    border-radius:60% 10% 60% 10%;
+    opacity:.75;
+    animation-name:fall;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+    transform-style:preserve-3d;
+  }
+  @keyframes fall{
+    0%{transform:translate3d(0,-10vh,0) rotate3d(1,1,0,0deg); opacity:0;}
+    10%{opacity:.8;}
+    100%{transform:translate3d(20px,110vh,60px) rotate3d(1,1,0,340deg); opacity:0;}
+  }
+
+  .corner{position:absolute; width:64px; height:64px; opacity:.8; pointer-events:none;}
+  .corner.tl{top:12px; right:12px;}
+  .corner.tr{top:12px; left:12px; transform:scaleX(-1);}
+  .corner.bl{bottom:12px; right:12px; transform:scaleY(-1);}
+  .corner.br{bottom:12px; left:12px; transform:scale(-1,-1);}
+
+  #cover{
+    position:fixed; inset:0; z-index:10;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 50% 15%, #21486e 0%, var(--navy-deep) 65%);
+    perspective:1400px;
+    transition:opacity .8s ease;
+  }
+  #cover.hide{opacity:0; pointer-events:none;}
+
+  .card{
+    position:relative; width:min(90vw,410px);
+    padding:54px 28px 42px;
+    background:var(--cream);
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+    text-align:center;
+    transform-origin:top center;
+    transform-style:preserve-3d;
+    transition:transform .9s cubic-bezier(.6,.05,.2,1), opacity .9s ease;
+  }
+  .card::before{content:"";position:absolute; inset:9px; border:1px solid var(--gold); pointer-events:none;}
+  #cover.hide .card{transform:rotateX(-100deg) translateY(-30px); opacity:0;}
+
+  .eyebrow{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; letter-spacing:3px; color:var(--gold-deep); text-transform:uppercase;}
+  .heart-badge{
+    width:64px; height:64px; border-radius:50%; margin:16px auto 14px;
+    background:radial-gradient(circle at 35% 30%, #2c567f, var(--navy) 75%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 22px rgba(22,50,79,.35);
+  }
+  .heart-badge svg{width:24px; height:24px; fill:var(--gold);}
+  .cover-title{font-size:16px; color:var(--sky); margin:4px 0 2px;}
+  .monogram{font-family:'Aref Ruqaa',serif; font-size:50px; color:var(--navy); margin:14px 0 6px; line-height:1;}
+  .monogram span{color:var(--gold-deep); font-size:28px; margin:0 8px; vertical-align:middle;}
+  .cover-date{font-family:'Cormorant Garamond',serif; font-size:19px; letter-spacing:1px; color:var(--sky); margin-bottom:22px;}
+  .cover-sub{font-size:13.5px; color:#4A6178; line-height:1.9; margin-bottom:30px;}
+
+  .open-btn{
+    appearance:none; border:none; cursor:pointer; width:100%;
+    padding:15px 0; border-radius:2px; letter-spacing:1px;
+    background:linear-gradient(120deg,var(--navy),var(--navy-deep));
+    color:var(--cream); font-family:'Tajawal',sans-serif; font-weight:700; font-size:15px;
+    box-shadow:0 10px 24px rgba(13,35,56,.4);
+    transition:transform .3s ease;
+  }
+  .open-btn:active{transform:scale(.96);}
+
+  #invite{
+    position:relative; background:var(--cream);
+    min-height:100vh; opacity:0; transform:translateY(50px);
+    transition:opacity 1s ease, transform 1s ease;
+    display:none;
+  }
+  #invite.show{opacity:1; transform:translateY(0); display:block;}
+
+  .hero{
+    position:relative; padding:74px 20px 60px; text-align:center; overflow:hidden;
+    background:radial-gradient(circle at 50% 0%, #1c4269, var(--navy-deep) 80%);
+    color:var(--cream);
+  }
+  .hero::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:56px; background:var(--cream);
+    clip-path:polygon(0 100%, 100% 100%, 100% 30%, 50% 100%, 0 30%);
+  }
+  .hero .eyebrow{color:var(--powder);}
+  #rings3d-wrap{position:relative; height:200px; margin:6px auto -30px; max-width:320px;}
+  #rings3d{width:100%; height:100%; display:block;}
+  .names{font-family:'Aref Ruqaa',serif; font-size:clamp(36px,9vw,54px); position:relative; z-index:2; margin:0;}
+  .names .amp{color:var(--gold); font-size:.55em; margin:0 8px;}
+  .hero-caption{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--powder); margin-top:8px;}
+  .hero p.lead{font-size:14px; color:#D7E4F0; max-width:340px; margin:16px auto 0; line-height:1.9;}
+
+  .couple-photos{display:flex; justify-content:center; margin:34px 0 0;}
+  .photo-circle{
+    width:150px; height:150px; border-radius:50%; overflow:hidden;
+    border:3px solid var(--gold); background:linear-gradient(135deg,#2c567f,#16324F);
+    display:flex; align-items:center; justify-content:center; color:var(--powder);
+    font-size:11.5px; text-align:center; padding:10px; line-height:1.7;
+    transition:transform .4s ease; will-change:transform;
+  }
+  .photo-circle:first-child{margin-left:-26px; z-index:2;}
+  .photo-circle img{width:100%; height:100%; object-fit:cover;}
+  .photo-names{display:flex; justify-content:center; gap:34px; margin-top:14px; font-size:13px; color:var(--powder);}
+
+  section{padding:50px 20px; max-width:540px; margin:0 auto; position:relative;}
+  .divider{display:flex; align-items:center; gap:12px; color:var(--gold-deep); margin:0 auto 24px; max-width:220px;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--gold);}
+  .divider span{font-size:17px;}
+  h2.section-title{font-family:'Aref Ruqaa',serif; font-size:26px; color:var(--navy); text-align:center; margin:0 0 6px;}
+  .section-eyebrow{text-align:center; font-family:'Cormorant Garamond',serif; font-style:italic; letter-spacing:2px; color:var(--sky); font-size:14px; text-transform:uppercase; margin-bottom:6px;}
+  .section-sub{text-align:center; color:#4A6178; font-size:13.5px; margin-bottom:28px;}
+
+  .countdown{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:36px;}
+  .cd-box{background:var(--paper); border:1px solid var(--powder); border-radius:10px; width:72px; padding:12px 0; text-align:center;}
+  .cd-box b{display:block; font-size:23px; color:var(--navy); font-family:'Aref Ruqaa',serif;}
+  .cd-box span{font-size:11px; color:var(--sky);}
+
+  .calendar{
+    background:var(--navy); border-radius:16px; padding:22px 18px 26px; color:var(--cream);
+    box-shadow:0 18px 40px rgba(22,50,79,.25);
+  }
+  .cal-head{display:flex; justify-space-between; align-items:center; margin-bottom:14px;}
+  .cal-head b{font-family:'Aref Ruqaa',serif; font-size:19px;}
+  .cal-head span{font-size:12px; color:var(--powder);}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; text-align:center;}
+  .cal-grid .dow{font-size:10.5px; color:var(--gold); padding-bottom:6px;}
+  .cal-grid .day{font-size:12.5px; padding:7px 0; border-radius:8px; color:var(--powder);}
+  .cal-grid .day.today{background:var(--gold); color:var(--navy-deep); font-weight:700;}
+  .cal-grid .day.empty{visibility:hidden;}
+
+  .venue-card{background:var(--paper); border-radius:16px; overflow:hidden; border:1px solid var(--powder);}
+  .venue-map{width:100%; height:260px; border:0; display:block;}
+  .venue-info{padding:20px; text-align:center;}
+  .venue-info h3{margin:0 0 4px; font-family:'Aref Ruqaa',serif; font-size:20px; color:var(--navy);}
+  .venue-info p{margin:0 0 16px; font-size:13.5px; color:#4A6178; line-height:1.8;}
+  .btn-solid{
+    display:inline-block; padding:11px 24px; border-radius:99px; text-decoration:none;
+    font-size:13.5px; font-weight:bold; cursor:pointer; background:var(--navy); color:var(--cream) !important;
+  }
+
+  /* تصميم قسم Our Story السينمائي */
+  .story-card {
+    background: var(--paper);
+    border: 1px solid var(--powder);
+    border-radius: 16px;
+    padding: 30px 24px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  }
+  .story-card h3 {
+    font-family: 'Aref Ruqaa', serif;
+    font-size: 28px;
+    color: var(--navy);
+    margin: 0 0 16px 0;
+    line-height: 1.3;
+  }
+  .story-card p {
+    font-size: 15px;
+    color: #4A6178;
+    line-height: 2;
+    margin: 0;
+    white-space: pre-line;
+  }
+
+  .wish-form{background:var(--paper); border:1px solid var(--powder); border-radius:16px; padding:22px; margin-bottom:26px;}
+  .wish-form label{display:block; font-size:13px; color:#4A6178; margin:0 0 6px;}
+  .wish-form input, .wish-form textarea{
+    width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--powder);
+    font-family:'Tajawal',sans-serif; font-size:14px; margin-bottom:14px; background:#fff; color:var(--navy);
+  }
+  .wish-form textarea{resize:vertical; min-height:70px;}
+  .rsvp-toggle{display:flex; gap:10px; margin-bottom:16px;}
+  .rsvp-toggle button{
+    flex:1; padding:10px; border-radius:10px; border:1px solid var(--navy);
+    background:#fff; font-family:'Tajawal',sans-serif; font-size:13px; cursor:pointer; color:var(--navy);
+    transition:.2s;
+  }
+  .rsvp-toggle button.active{background:var(--navy); color:#fff;}
+  .submit-btn{
+    width:100%; padding:13px; border:none; border-radius:10px; cursor:pointer;
+    background:linear-gradient(120deg,var(--gold-deep),var(--gold));
+    color:var(--navy-deep); font-weight:700; font-size:14.5px; font-family:'Tajawal',sans-serif;
+  }
+  .status-msg{text-align:center; font-size:12.5px; margin-top:10px; min-height:16px; color:#4A6178;}
+
+  .wishes-list{display:flex; flex-direction:column; gap:12px;}
+  .wish-item{background:#fff; border:1px solid var(--powder); border-radius:12px; padding:14px 16px;}
+  .wish-item .who{display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;}
+  .wish-item .who b{color:var(--navy); font-size:14px;}
+  .wish-item .who small{font-size:11px; color:var(--gold-deep);}
+  .wish-item p{margin:0; font-size:13.5px; color:#4A6178; line-height:1.7;}
+
+  footer{text-align:center; padding:40px 20px 54px; background:var(--navy-deep); color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+
+<div id="cover">
+  <div class="card" id="cover-card">
+    <svg class="corner tl" viewBox="0 0 64 64"><path d="M2 62C2 28 28 2 62 2" fill="none" stroke="#C9A961" stroke-width="1.2"/><circle cx="62" cy="2" r="2.2" fill="#C9A961"/><circle cx="2" cy="62" r="2.2" fill="#C9A961"/></svg>
+    <svg class="corner tr" viewBox="0 0 64 64"><path d="M2 62C2 28 28 2 62 2" fill="none" stroke="#C9A961" stroke-width="1.2"/><circle cx="62" cy="2" r="2.2" fill="#C9A961"/><circle cx="2" cy="62" r="2.2" fill="#C9A961"/></svg>
+    <svg class="corner bl" viewBox="0 0 64 64"><path d="M2 62C2 28 28 2 62 2" fill="none" stroke="#C9A961" stroke-width="1.2"/><circle cx="62" cy="2" r="2.2" fill="#C9A961"/><circle cx="2" cy="62" r="2.2" fill="#C9A961"/></svg>
+    <svg class="corner br" viewBox="0 0 64 64"><path d="M2 62C2 28 28 2 62 2" fill="none" stroke="#C9A961" stroke-width="1.2"/><circle cx="62" cy="2" r="2.2" fill="#C9A961"/><circle cx="2" cy="62" r="2.2" fill="#C9A961"/></svg>
+
+    <div class="eyebrow">a digital invitation</div>
+    <div class="heart-badge"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.9-10-9.3C.4 8.2 2 4.5 5.6 4.5c2 0 3.4 1 4.4 2.6C11 5.5 12.4 4.5 14.4 4.5 18 4.5 19.6 8.2 22 11.7 19.5 16.1 12 21 12 21z"/></svg></div>
+    <div class="cover-title">دعوة زفاف</div>
+    <div class="monogram" id="c-names">--<span>&</span>--</div>
+    <div class="cover-date" id="c-date">--</div>
+    <p class="cover-sub">يسعدنا ويشرفنا مشاركتكم أجمل لحظات فرحنا، فبحضوركم تكتمل الفرحة</p>
+
+    <button class="open-btn" onclick="openInvite()">افتح الدعوة</button>
+  </div>
+</div>
+
+<div id="invite">
+  <div class="hero">
+    <div class="eyebrow">together with our families</div>
+    <div id="rings3d-wrap"><canvas id="rings3d"></canvas></div>
+    <h1 class="names" id="h-names">-- <span class="amp">&</span> --</h1>
+    <div class="hero-caption">our wedding day</div>
+    <p class="lead">بقلوب مليئة بالحب والامتنان، ندعوكم لتكونوا شهودًا على بداية حكايتنا معًا</p>
+
+    <div class="couple-photos">
+      <div class="photo-circle" id="photo-groom"><span class="ph-label">صورة<br>العريس</span></div>
+      <div class="photo-circle" id="photo-bride"><span class="ph-label">صورة<br>العروسة</span></div>
+    </div>
+    <div class="photo-names"><span id="g-name">--</span><span id="b-name">--</span></div>
+  </div>
+
+  <section>
+    <div class="divider"><span>✦</span></div>
+    <div class="section-eyebrow">save the date</div>
+    <h2 class="section-title">احتفالنا يقترب</h2>
+    <p class="section-sub">لم يتبقَ على فرحتنا سوى</p>
+
+    <div class="countdown">
+      <div class="cd-box"><b id="cd-days">--</b><span>يوم</span></div>
+      <div class="cd-box"><b id="cd-hours">--</b><span>ساعة</span></div>
+      <div class="cd-box"><b id="cd-mins">--</b><span>دقيقة</span></div>
+      <div class="cd-box"><b id="cd-secs">--</b><span>ثانية</span></div>
+    </div>
+
+    <div class="calendar">
+      <div class="cal-head"><b id="cal-month-year"></b><span>مبروك مقدمًا 💙</span></div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+  </section>
+
+  <!-- قسم Our Story بدلاً من المعرض الصور القديم -->
+  <section>
+    <div class="divider"><span>✦</span></div>
+    <div class="section-eyebrow">our story</div>
+    <h2 class="section-title">قصتنا</h2>
+    <div class="story-card">
+      <h3 id="story-title">--</h3>
+      <p id="story-text">--</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="divider"><span>✦</span></div>
+    <div class="section-eyebrow">join us at</div>
+    <h2 class="section-title">مكان الحفل</h2>
+    <p class="section-sub" id="v-name">--</p>
+
+    <div class="venue-card">
+      <iframe class="venue-map" id="venue-iframe" allowfullscreen="" loading="lazy"></iframe>
+      <div class="venue-info">
+        <h3 id="v-title">--</h3>
+        <p>يليها حفل عشاء ورقص حتى ساعات الصباح الأولى</p>
+        <a class="btn-solid" id="open-map-btn" href="#" target="_blank">فتح في تطبيق Google Maps 📍</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="divider"><span>✦</span></div>
+    <div class="section-eyebrow">leave a little love</div>
+    <h2 class="section-title">دفتر التمنيات</h2>
+
+    <div class="wish-form">
+      <label for="wish-name">الاسم</label>
+      <input id="wish-name" type="text" placeholder="اكتب اسمك هنا">
+
+      <div class="rsvp-toggle">
+        <button type="button" id="rsvp-yes" class="active" onclick="setRsvp(true)">يسعدني الحضور</button>
+        <button type="button" id="rsvp-no" onclick="setRsvp(false)">عذرًا لن أتمكن</button>
+      </div>
+
+      <label for="wish-msg">رسالتكم</label>
+      <textarea id="wish-msg" placeholder="اكتبوا تهنئتكم"></textarea>
+
+      <button class="submit-btn" id="send-btn" onclick="sendWish()">إرسال التمنيات</button>
+      <div class="status-msg" id="status-msg"></div>
+    </div>
+
+    <div class="wishes-list" id="wishes-list"></div>
+  </section>
+
+  <footer>
+    <div class="display">بحبكم تكتمل فرحتنا</div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const slug = urlParams.get('id') || 'demo';
+  let WEDDING = null;
+  let rsvpAttending = true;
+
+  async function init() {
+    try {
+      const res = await fetch(`/api/invitations/${slug}`);
+      if (!res.ok) throw new Error();
+      WEDDING = await res.json();
+
+      const names = `${WEDDING.groomName}<span>&</span>${WEDDING.brideName}`;
+      document.getElementById('c-names').innerHTML = names;
+      document.getElementById('h-names').innerHTML = `${WEDDING.groomName} <span class="amp">&</span> ${WEDDING.brideName}`;
+      document.getElementById('g-name').innerText = WEDDING.groomName;
+      document.getElementById('b-name').innerText = WEDDING.brideName;
+      document.getElementById('v-name').innerText = WEDDING.venueName;
+      document.getElementById('v-title').innerText = WEDDING.venueName;
+
+      // Our Story
+      document.getElementById('story-title').innerText = WEDDING.ourStoryTitle || "بداية حكايتنا";
+      document.getElementById('story-text').innerText = WEDDING.ourStoryText || "هنا نكتب تفاصيل الحكاية واللحظات الجميلة التي جمعتنا...";
+
+      // الخريطة
+      document.getElementById('venue-iframe').src = WEDDING.venueMapEmbedUrl || `https://maps.google.com/maps?q=${encodeURIComponent(WEDDING.venueMapUrl)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+      document.getElementById('open-map-btn').href = WEDDING.venueMapUrl;
+
+      // صور العروسين
+      if(WEDDING.groomPhoto) {
+        document.getElementById('photo-groom').innerHTML = `<img src="${WEDDING.groomPhoto}" alt="${WEDDING.groomName}">`;
+      }
+      if(WEDDING.bridePhoto) {
+        document.getElementById('photo-bride').innerHTML = `<img src="${WEDDING.bridePhoto}" alt="${WEDDING.brideName}">`;
+      }
+
+      renderWishes();
+      createPetals();
+    } catch(err) {
+      alert('لم يتم العثور على الدعوة المطلوبة');
+    }
+  }
+
+  function createPetals() {
+    const container = document.getElementById('petals');
+    for(let i=0; i<15; i++){
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.style.left = Math.random() * 100 + 'vw';
+      petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      petal.style.animationDelay = (Math.random() * 5) + 's';
+      container.appendChild(petal);
+    }
+  }
+
+  function openInvite() {
+    document.getElementById('cover').classList.add('hide');
+    setTimeout(() => {
+      document.getElementById('cover').style.display = 'none';
+      document.getElementById('invite').classList.add('show');
+      initThreeJS();
+      renderCalendar();
+      startCountdown();
+    }, 800);
+  }
+
+  function setRsvp(val) {
+    rsvpAttending = val;
+    document.getElementById('rsvp-yes').classList.toggle('active', val);
+    document.getElementById('rsvp-no').classList.toggle('active', !val);
+  }
+
+  async function sendWish() {
+    const name = document.getElementById('wish-name').value.trim();
+    const msg = document.getElementById('wish-msg').value.trim();
+    if(!name || !msg) return;
+
+    const res = await fetch(`/api/invitations/${slug}/wishes`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ name, msg, attending: rsvpAttending })
+    });
+
+    if(res.ok) {
+      document.getElementById('status-msg').innerText = "تم إرسال التهنئة! ستظهر فور موافقة العروسين عليها ✨";
+      document.getElementById('wish-name').value = '';
+      document.getElementById('wish-msg').value = '';
+    }
+  }
+
+  function renderWishes() {
+    const container = document.getElementById('wishes-list');
+    container.innerHTML = WEDDING.wishes.map(w => `
+      <div class="wish-item">
+        <div class="who"><b>${w.name}</b><small>${w.attending ? 'حاضر ✨' : 'اعتذر 🌸'}</small></div>
+        <p>${w.msg}</p>
+      </div>
+    `).join('');
+  }
+
+  function startCountdown() {
+    const target = new Date(WEDDING.dateISO).getTime();
+    setInterval(() => {
+      const diff = target - new Date().getTime();
+      if(diff <= 0) return;
+      document.getElementById('cd-days').innerText = String(Math.floor(diff / (1000*60*60*24))).padStart(2,'0');
+      document.getElementById('cd-hours').innerText = String(Math.floor((diff/(1000*60*60))%24)).padStart(2,'0');
+      document.getElementById('cd-mins').innerText = String(Math.floor((diff/1000/60)%60)).padStart(2,'0');
+      document.getElementById('cd-secs').innerText = String(Math.floor((diff/1000)%60)).padStart(2,'0');
+    }, 1000);
+  }
+
+  function renderCalendar() {
+    const date = new Date(WEDDING.dateISO);
+    const monthNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+    document.getElementById('cal-month-year').innerText = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+    const grid = document.getElementById('cal-grid');
+    grid.innerHTML = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'].map(d => `<div class="dow">${d}</div>`).join('');
+    
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+    const totalDays = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div class="day empty"></div>`;
+    for (let d = 1; d <= totalDays; d++) {
+      grid.innerHTML += `<div class="day ${d === date.getDate() ? 'today' : ''}">${d}</div>`;
+    }
+  }
+
+  function initThreeJS() {
+    const container = document.getElementById('rings3d-wrap');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.z = 6;
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('rings3d'), alpha: true, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+
+    scene.add(new THREE.DirectionalLight(0xffffff, 1.2));
+    scene.add(new THREE.AmbientLight(0xffe6b3, 0.8));
+
+    const geo = new THREE.TorusGeometry(1, 0.12, 16, 100);
+    const mat = new THREE.MeshStandardMaterial({ color: 0xC9A961, metalness: 0.85, roughness: 0.15 });
+    const r1 = new THREE.Mesh(geo, mat), r2 = new THREE.Mesh(geo, mat);
+    r1.position.x = -0.55; r2.position.x = 0.55;
+    const group = new THREE.Group(); group.add(r1); group.add(r2); scene.add(group);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      group.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  }
+
+  init();
+</script>
+</body>
+</html>
