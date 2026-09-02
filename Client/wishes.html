@@ -47,7 +47,7 @@
 
   async function loadWishes() {
     // if(!slug) return alert('الرابط غير صحيح');
-    const res = await fetch(`http://localhost:5000/api/invitations/mahmoud-kamilia/admin`);
+    const res = await fetch(`/api/invitations/${slug}/admin`);
     const data = await res.json();
     document.getElementById('title').innerText = `إدارة تهاني ${data.groomName} & ${data.brideName}`;
 
@@ -72,7 +72,7 @@
   }
 
   async function updateWish(wishId, status) {
-    await fetch(`http://localhost:5000/api/invitations/${slug}/wishes/${wishId}`, {
+    await fetch(`/api/invitations/${slug}/wishes/${wishId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
