@@ -973,8 +973,8 @@
           document.getElementById('c-date').innerText = d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
-        document.getElementById('story-title').innerText = WEDDING.ourStoryTitle || "بداية حكايتنا";
-        document.getElementById('story-text').innerText = WEDDING.ourStoryText || "هنا نكتب تفاصيل الحكاية واللحظات الجميلة التي جمعتنا...";
+        document.getElementById('story-title').innerText = WEDDING.ourStoryTitle;
+        document.getElementById('story-text').innerText = WEDDING.ourStoryText;
 
         document.getElementById('venue-iframe').src = WEDDING.venueMapEmbedUrl || `https://maps.google.com/maps?q=${encodeURIComponent(WEDDING.venueMapUrl || '')}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
         document.getElementById('open-map-btn').href = WEDDING.venueMapUrl || '#';
